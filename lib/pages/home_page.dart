@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'province_list.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,74 +9,74 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final TextEditingController _searchController = TextEditingController();
+  List<String> provinceList = [
+    "Sumatra Selatan",
+    "Sumatra Barat",
+    "Bengkulu",
+    "Riau",
+    "Kepulauan Riau",
+    "Jambi",
+    "Lampung",
+    "Bangka Belitung"
+  ];
+  List<String> filteredProvinces = [];
 
-  void _performSearch() {
-    String query = _searchController.text;
-    Navigator.pushNamed(context, '/search', arguments: query);
+  @override
+  void initState() {
+    super.initState();
+    filteredProvinces = List.from(provinceList); // Awalnya tampil semua
+  }
+
+  void _searchProvince(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        filteredProvinces = List.from(provinceList);
+      } else {
+        filteredProvinces = provinceList
+            .where((province) =>
+                province.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Home")),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              Image.asset("assets/img1.jpg",
-                  width: double.infinity, fit: BoxFit.cover, height: 200),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Choose your destination",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _searchController,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: "Enter destination",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: _performSearch,
-                          style: ElevatedButton.styleFrom(
-                            shape: const CircleBorder(),
-                            padding: const EdgeInsets.all(15),
-                          ),
-                          child: const Icon(Icons.search),
-                        ),
-                      ],
-                    ),
-                  ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _searchController,
+              onChanged: _searchProvince,
+              decoration: InputDecoration(
+                labelText: "Enter destination",
+                border: OutlineInputBorder(),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () => _searchProvince(_searchController.text),
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          const Expanded(
-            child: ProvinceList(),
-          ),
-        ],
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: filteredProvinces.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(filteredProvinces[index]),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/provinceDetail',
+                          arguments: {'name': filteredProvinces[index]});
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

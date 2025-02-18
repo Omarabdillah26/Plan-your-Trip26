@@ -25,15 +25,26 @@ class LoginPage extends StatelessWidget {
                 decoration:
                     const InputDecoration(border: OutlineInputBorder())),
             const SizedBox(height: 10),
-            TextButton(onPressed: () {}, child: const Text("Forgot Password?")),
+            TextButton(
+                onPressed: () {},
+                child: const Text("Forgot Password?",
+                    style: TextStyle(color: Colors.teal))),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.pushReplacementNamed(context, '/home');
               },
               style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50)),
-              child: const Text("Log In"),
+                minimumSize: const Size(double.infinity, 50),
+                backgroundColor:
+                    Colors.orange, // Warna tombol login sesuai gambar
+                foregroundColor: Colors.white, // Warna teks tombol
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text("Log In",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ),
             const SizedBox(height: 10),
             Row(
